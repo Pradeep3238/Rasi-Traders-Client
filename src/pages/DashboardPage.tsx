@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import AddProductModal from "../components/DashBoard/AddProductModal";
-
+import { Button, Col, Divider, Row, Typography } from "antd";
 import Product from "../components/DashBoard/Product";
+import CommonLayout from "./CommonLayout";
+import DashBoardCarousel from "../components/DashBoard/DashBoardCarousel";
+import FooterComponent from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
-
-
+const { Paragraph, Title } = Typography;
 const DashboardPage: React.FC = () => {
-  const [open, setOpen] = useState(false);
   const [products, setProducts] = useState([]);
-
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,27 +27,38 @@ const DashboardPage: React.FC = () => {
     };
 
     fetchProducts();
-  }, []);
-
+  }, [products]);
 
   return (
     <>
-      <div>
-        <Button type="primary" style={{ float: "right" }} onClick={showModal}>
-          {" "}
-          <PlusCircleOutlined /> Add Product{" "}
-        </Button>
+      <div style={{ textAlign: "center" }}>
+        <Title level={1} style={{ fontStyle: "oblique" }}>
+          Rasi Traders
+        </Title>
+        <Paragraph
+          style={{
+            fontFamily: "monospace",
+            fontStretch: "extra-expanded",
+            fontSize: 24,
+          }}
+        >
+          A perfect choice for a perfect home !{" "}
+        </Paragraph>
       </div>
+      <DashBoardCarousel />
+      <CommonLayout>
+      <Title style={{textAlign:"center"}}>Our Products</Title>
+        <Row gutter={[16, 48]} style={{ marginTop: 50 }}>
+          {products.slice(0,4).map((product, index) => (
+            <Col key={index} span={6}>
+              <Product data={product} />
+            </Col>
+          ))}
+        </Row>
+        <Button type="primary" size="large" style={{marginLeft:'45.33%', marginTop:30}} onClick={()=>navigate('/Products')}>View More</Button>
+      </CommonLayout>
 
-      <Row gutter={[32, 32]} style={{ marginTop: 50 }}>
-        {products.map((product, index) => (
-          <Col key={index} span={8} style={{ marginBottom: 16 }}>
-            <Product data={product} />
-          </Col>
-        ))}
-      </Row>
-
-      <AddProductModal open={open} onCancel={handleCancel} />
+      <FooterComponent />
     </>
   );
 };

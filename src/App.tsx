@@ -1,23 +1,31 @@
-
-import {  Routes, Route, BrowserRouter } from "react-router-dom";
-import FeedbacksPage from "./pages/FeedbacksPage";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
 import CustomersPage from "./pages/CustomersPage";
-import CommonLayout from "./pages/CommonLayout";
 import DashboardPage from "./pages/DashboardPage";
+import LoginPage from "./pages/LoginPage";
+import Navbar from "./components/Navbar";
+
+import { Provider } from "react-redux";
+import store from "./store/index.js";
+import ProductsPage from "./pages/ProductsPage.js";
 
 const App = () => {
+
   return (
-    <BrowserRouter>
-      <CommonLayout>
-        <Routes>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/feedbacks" element={<FeedbacksPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/customers" element={<CustomersPage />} />
-        </Routes>
-      </CommonLayout>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+      <Navbar />
+          <Routes>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/products" element={<ProductsPage/>}/>
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/customers" element={<CustomersPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
