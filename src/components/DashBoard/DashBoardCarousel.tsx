@@ -7,8 +7,8 @@ const DashBoardCarousel: React.FC = () => {
     <div className={styles.imageContainer}>
 
     <Carousel autoplay>
-      {imageList.map((image: any) => (
-        <img src={image} alt="" />
+      {imageList.map((image: any,i:number) => (
+        <img src={image} alt=""  key={i+1}/>
       ))}
     </Carousel>
     </div>

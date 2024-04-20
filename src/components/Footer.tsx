@@ -1,4 +1,4 @@
-import { Typography, Layout, Divider, Flex } from "antd";
+import { Typography, Layout, Divider } from "antd";
 import FeedBackForm from "./FeedBackForm";
 
 const{Paragraph}= Typography

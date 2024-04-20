@@ -1,4 +1,4 @@
-
+import {Link} from 'react-router-dom';
 import {
   Button,
   Form,
@@ -7,33 +7,32 @@ import {
   Typography,
   theme,
   Image,
-  Checkbox,
-  Alert,
-  Spin,
+  Spin
+  
 } from "antd";
-import { LockOutlined, MailOutlined, GoogleOutlined } from "@ant-design/icons";
+import { LockOutlined, MailOutlined, GoogleOutlined, UserOutlined, PhoneOutlined } from "@ant-design/icons";
 import logo from '../assets/logo4.png';
-import { Link } from "react-router-dom";
-import useLogin from "../hooks/useLogin";
+
+import useSignup from "../hooks/useSignup";
+
 const { useToken } = theme;
 
-const LoginPage = () => {
+const SignupPage = () => {
   const { token } = useToken();
   const screens = Grid.useBreakpoint();
+  const {loading,registerUser} = useSignup();
+  
+  const handleRegister=(values:any)=>{
+    registerUser(values);
+  }
 
-  const { loginUser, loading, error } = useLogin();
-
-  const handleLogin = (values:any) => {
-    loginUser(values);
-    
-  };
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
+        minHeight: "90vh",
       }}
     >
       <div
@@ -46,18 +45,23 @@ const LoginPage = () => {
           border: "1px solid #e0e0e0",
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: token.marginXL }}>
+        <div style={{ textAlign: "center", marginBottom: token.marginXXS }}>
+          <Image preview={false} width={200} src={logo} />
 
-        <Image preview={false} width={200} src={logo}  />
-          <Typography.Title level={2}>Login</Typography.Title >
+          <Typography.Title level={2}>Signup</Typography.Title>
         </div>
-        <Form
-          name="login"
-          layout="vertical"
-          requiredMark="optional"
-          autoComplete="on"
-          onFinish={handleLogin}
-        >
+        <Form name="signup" layout="vertical" requiredMark="optional" autoComplete="on" onFinish={handleRegister}>
+          <Form.Item
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Please input your name!",
+              },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Name" />
+          </Form.Item>
           <Form.Item
             name="email"
             rules={[
@@ -68,6 +72,17 @@ const LoginPage = () => {
             ]}
           >
             <Input prefix={<MailOutlined />} placeholder="Email" />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            rules={[
+              {
+                required: true,
+                message: "Please input your phone number!",
+              },
+            ]}
+          >
+            <Input prefix={<PhoneOutlined />} placeholder="Phone" />
           </Form.Item>
           <Form.Item
             name="password"
@@ -85,32 +100,9 @@ const LoginPage = () => {
             />
           </Form.Item>
 
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <a
-              className="login-form-forgot"
-              href="#"
-              style={{ float: "right" }}
-            >
-              Forgot password
-            </a>
-          </Form.Item>
-          {error && (
-            <Alert description={error} type="error" showIcon closable />
-            
-          )}
-
           <Form.Item style={{ marginBottom: "16px" }}>
-            <Button
-              block
-              type={loading ? undefined : "primary"}
-              htmlType="submit"
-            >
-              {loading ? <Spin /> : "Sign In"}
-              
+            <Button block type={loading ? undefined : "primary"} htmlType="submit">
+              {loading ? <Spin/> : 'Signup'}
             </Button>
             <Typography.Text
               style={{ textAlign: "center", display: "block", margin: "8px 0" }}
@@ -118,11 +110,14 @@ const LoginPage = () => {
               or
             </Typography.Text>
             <Button block type="primary" icon={<GoogleOutlined />}>
-              Sign in with Google
+              Sign up with Google
             </Button>
           </Form.Item>
           <Typography.Text style={{ textAlign: "center", display: "block" }}>
-            Don't have an account? <Link to="/signup">Register</Link>
+            Already have an account?{" "}
+            <Link to="/login">
+               Login
+            </Link>
           </Typography.Text>
         </Form>
       </div>
@@ -130,4 +125,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

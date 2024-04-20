@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Divider, Row, Typography } from "antd";
+import { Button, Col, Row, Typography } from "antd";
 import Product from "../components/DashBoard/Product";
-import CommonLayout from "./CommonLayout";
 import DashBoardCarousel from "../components/DashBoard/DashBoardCarousel";
 import FooterComponent from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const { Paragraph, Title } = Typography;
 const DashboardPage: React.FC = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
+  const {token} = useSelector((state:any) => state.auth);
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/products/");
+        const response = await fetch("http://localhost:3000/api/v1/products/",{
+          headers:{
+            'Authorization':`Bearer ${token}`
+          }
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch products");
@@ -27,7 +33,7 @@ const DashboardPage: React.FC = () => {
     };
 
     fetchProducts();
-  }, [products]);
+  }, []);
 
   return (
     <>
@@ -46,17 +52,23 @@ const DashboardPage: React.FC = () => {
         </Paragraph>
       </div>
       <DashBoardCarousel />
-      <CommonLayout>
-      <Title style={{textAlign:"center"}}>Our Products</Title>
+
+        <Title style={{ textAlign: "center" }}>Our Products</Title>
         <Row gutter={[16, 48]} style={{ marginTop: 50 }}>
-          {products.slice(0,4).map((product, index) => (
+          {products.slice(0, 4).map((product, index) => (
             <Col key={index} span={6}>
               <Product data={product} />
             </Col>
           ))}
         </Row>
-        <Button type="primary" size="large" style={{marginLeft:'45.33%', marginTop:30}} onClick={()=>navigate('/Products')}>View More</Button>
-      </CommonLayout>
+        <Button
+          type="primary"
+          size="large"
+          style={{width:200, margin:'auto', marginTop:40}}
+          onClick={() => navigate("/Products")}
+        >
+          View More
+        </Button>
 
       <FooterComponent />
     </>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Space, Table, Tag } from "antd";
 import type { TableProps } from "antd";
-import CommonLayout from "./CommonLayout";
 
 interface DataType {
   key: string;
@@ -86,9 +85,9 @@ const data: DataType[] = [
 
 const OrdersPage: React.FC = () => {
   return (
-    <CommonLayout>
+  
       <Table columns={columns} dataSource={data} />
-    </CommonLayout>
+
   );
 };
 

@@ -1,24 +1,39 @@
-import { Button, Card, Flex, Typography } from "antd";
+import { Button, Card, Flex, Typography, theme } from "antd";
 import { ShoppingCartOutlined, TruckOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss";
 import { useDispatch } from "react-redux";
-import { cartActions } from "../../store/cart-slice";
+import {  cartActions } from "../../store/cart-slice";
+import { useNavigate } from "react-router-dom";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
 const Product: React.FC<{ data: any }> = ({ data }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const {
+    token: { colorSuccess },
+  } = theme.useToken();
+
+  
   const addItemToCartHandler = () => {
     dispatch(
       cartActions.addItemToCart({
         itemId: data._id,
-        image:data.images[0],
+        image: data.images[0],
         price: data.price,
         quantity: 1,
         name: data.name,
       })
     );
+  };
+
+  const goToCartHandler = () => {
+    navigate("/cart");
+  };
+
+  const viewProductHandler = () => {
+    navigate(`/products/${data._id}`);
   };
 
   return (
@@ -32,11 +47,41 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
         </div>
       }
     >
-      <Title level={4}>{data.name}</Title>
-      <h4>{data.price}</h4>
-      <p>{data.color}</p>
-      <p>{data.category}</p>
-      <Flex gap={2  }>
+      <Title level={3} style={{ margin: 0 }}>
+        {data.name}
+      </Title>
+      <Paragraph style={{ fontFamily: "monospace", margin: 0 }}>
+        ₹<span style={{ fontWeight: "bold" }}>{data.price}</span>/
+        <span style={{ fontSize: 12, fontWeight: "0" }}>{data.unit}</span>
+      </Paragraph>
+
+      <Flex vertical style={{ padding: 0, margin: 0 }}>
+        <Paragraph style={{ margin: "10px 0 0 0" }}>
+          <span style={{ fontWeight: "light", fontFamily: "sans-serif" }}>
+            Category:{" "}
+          </span>
+          {data.category}
+        </Paragraph>
+        <Paragraph style={{ margin: 0 }}>
+          <span style={{ fontWeight: 10, fontFamily: "sans-serif" }}>
+            Description:{" "}
+          </span>
+          {data.description}
+        </Paragraph>
+        <Paragraph style={{ margin: 0 }}>
+          <span style={{ fontWeight: "light", fontFamily: "sans-serif" }}>
+            Brand:{" "}
+          </span>
+          {data.brand}
+        </Paragraph>
+        <Paragraph style={{ margin: "0 0 10px 0" }}>
+          <span style={{ fontWeight: "light", fontFamily: "sans-serif" }}>
+            Material:{" "}
+          </span>
+          {data.material}
+        </Paragraph>
+      </Flex>
+      <Flex gap={20}>
         <Button
           icon={<ShoppingCartOutlined />}
           type="default"
@@ -45,7 +90,20 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
           Add to Cart
         </Button>
 
-        <Button icon={<TruckOutlined />} type="primary">
+        {/* <Button
+            icon={<ShoppingCartOutlined />}
+            type="default"
+            style={{backgroundColor:colorSuccess}}
+            onClick={goToCartHandler}
+          >
+            Go to Cart
+          </Button> */}
+
+        <Button
+          icon={<TruckOutlined />}
+          type="primary"
+          onClick={viewProductHandler}
+        >
           Buy now{" "}
         </Button>
       </Flex>

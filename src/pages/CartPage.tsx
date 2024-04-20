@@ -1,9 +1,9 @@
-import React from 'react';
+ 
 import { Avatar, Button, Flex, Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, cartActions, CartItem } from '../store/cart-slice';
+import { CartStateType, cartActions, CartItem } from '../store/cart-slice';
 import { CheckOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import CommonLayout from './CommonLayout';
+
 
 const columns = (addItemToCartHandler: any, removeItemFromCartHandler: any) => [
   {
@@ -41,11 +41,12 @@ const columns = (addItemToCartHandler: any, removeItemFromCartHandler: any) => [
 ];
 
 const CartPage: React.FC = () => {
-  const cartItems: CartItem[] = useSelector((state: RootState) => state.cart.items);
-  const billAmount = useSelector((state: RootState) => state.cart.billAmount);
+
+  const cart = useSelector((state: CartStateType) => state.cart);
+  const{billAmount, items} = cart
   const dispatch = useDispatch();
-  const cart= useSelector((state:RootState )=> state.cart);
   console.log(cart)
+
   const addItemToCartHandler = (item: CartItem) => {
     dispatch(cartActions.addItemToCart(item));
   };
@@ -54,7 +55,7 @@ const CartPage: React.FC = () => {
     dispatch(cartActions.removeItemFromCart(itemId));
   };
 
-  const tableData = cartItems.map(item => ({
+  const tableData = items ? items.map(item => ({
     key: item.itemId,
     name: item.name,
     image: item.image,
@@ -62,16 +63,18 @@ const CartPage: React.FC = () => {
     quantity: item.quantity,
     totalPrice: item.totalPrice,
     itemId: item.itemId,
-  }));
+  })) : [];
+  
 
   return (
-    <CommonLayout>
       <Flex vertical style={{marginLeft:80, marginRight:80}}>
       <Table columns={columns(addItemToCartHandler, removeItemFromCartHandler)} dataSource={tableData} />
       <Button size='large' icon={<CheckOutlined />} style={{ marginLeft:'auto', marginTop:25, maxWidth:300}}>Checkout ₹ {billAmount} </Button>
     </Flex>
-    </CommonLayout>
+
   );
 };
 
 export default CartPage;
+
+
