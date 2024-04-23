@@ -34,6 +34,8 @@ const router = createBrowserRouter([
 ]);
 
 
+let isInitial = true;
+
 const App = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state: CartStateType) => state.cart);
@@ -43,8 +45,11 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-
-    if(cart.changed)
+    if (isInitial) {
+      isInitial = false;
+      return;
+    }
+    if (cart.changed) 
       dispatch(updateCartData(cart));
   
   }, [cart, dispatch]);

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { fetchCartData } from "./cart-actions";
+// import { fetchCartData } from "./cart-actions";
 
 interface CartItem {
   itemId: string;
@@ -32,6 +32,12 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setCartData(state, action) {
+      const { items, totalQuantity, billAmount } = action.payload;
+      state.items = items;
+      state.totalQuantity = totalQuantity;
+      state.billAmount = billAmount;
+    },
     addItemToCart(state, action: PayloadAction<CartItem>) {
       const newItem = action.payload;
       const existingItem = state.items.find(
@@ -57,39 +63,22 @@ const cartSlice = createSlice({
     removeItemFromCart(state, action) {
       const id = action.payload;
       state.changed=true
-      const existingItemIndex = state.items.findIndex(
+      const existingItem = state.items.find(
         (item) => item.itemId === id
       );
-      if (existingItemIndex !== -1) {
-        const existingItem = state.items[existingItemIndex];
+      if (!existingItem) {
+        return
+      }
         state.totalQuantity--;
         state.billAmount -= existingItem.price;
 
         if (existingItem.quantity === 1) {
-          state.items.splice(existingItemIndex, 1);
+          state.items = state.items.filter((item) => item.itemId !== id);
         } else {
           existingItem.quantity--;
           existingItem.totalPrice -= existingItem.price;
         }
-      }
     },
-    setCartData(state, action) {
-      const { items, totalQuantity, billAmount , changed} = action.payload;
-      state.items = items;
-      state.totalQuantity = totalQuantity;
-      state.billAmount = billAmount;
-      state.changed = changed
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-    .addCase(fetchCartData.fulfilled, (state, action) => {
-      const cartData = action.payload;
-      state.items = cartData.items;
-      state.totalQuantity = cartData.totalQuantity;
-      state.billAmount = cartData.billAmount;
-      state.changed = cartData.changed;
-    });
   },
 });
 

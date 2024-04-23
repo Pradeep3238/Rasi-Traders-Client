@@ -45,7 +45,6 @@ const CartPage: React.FC = () => {
   const cart = useSelector((state: CartStateType) => state.cart);
   const{billAmount, items} = cart
   const dispatch = useDispatch();
-  console.log(cart)
 
   const addItemToCartHandler = (item: CartItem) => {
     dispatch(cartActions.addItemToCart(item));
