@@ -1,5 +1,5 @@
 import { Button, Card, Flex, Typography, theme } from "antd";
-import { EyeOutlined, ShoppingCartOutlined, TruckOutlined } from "@ant-design/icons";
+import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {  cartActions } from "../../store/cart-slice";
