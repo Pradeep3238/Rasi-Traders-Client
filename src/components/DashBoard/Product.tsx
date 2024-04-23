@@ -1,7 +1,7 @@
 import { Button, Card, Flex, Typography, theme } from "antd";
-import { ShoppingCartOutlined, TruckOutlined } from "@ant-design/icons";
+import { EyeOutlined, ShoppingCartOutlined, TruckOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {  cartActions } from "../../store/cart-slice";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,11 @@ const { Title, Paragraph } = Typography;
 const Product: React.FC<{ data: any }> = ({ data }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {items} = useSelector((state: any)=> state.cart)
+  
+  const isItemInCart = items.some((cartItem: any) => cartItem.itemId === data._id);
 
+  
   const {
     token: { colorSuccess },
   } = theme.useToken();
@@ -82,29 +86,31 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
         </Paragraph>
       </Flex>
       <Flex gap={20}>
-        <Button
-          icon={<ShoppingCartOutlined />}
-          type="default"
-          onClick={addItemToCartHandler}
-        >
-          Add to Cart
-        </Button>
-
-        {/* <Button
+      {isItemInCart ? (
+          <Button
             icon={<ShoppingCartOutlined />}
             type="default"
-            style={{backgroundColor:colorSuccess}}
+            style={{ backgroundColor: colorSuccess }}
             onClick={goToCartHandler}
           >
             Go to Cart
-          </Button> */}
+          </Button>
+        ) : (
+          <Button
+            icon={<ShoppingCartOutlined />}
+            type="default"
+            onClick={addItemToCartHandler}
+          >
+            Add to Cart
+          </Button>
+        )}    
 
         <Button
-          icon={<TruckOutlined />}
+          icon={<EyeOutlined />}
           type="primary"
           onClick={viewProductHandler}
         >
-          Buy now{" "}
+          View Product{" "}
         </Button>
       </Flex>
     </Card>
