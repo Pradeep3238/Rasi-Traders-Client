@@ -160,6 +160,7 @@ const OrdersPage: React.FC = () => {
         onCancel={handleCancelModalCancel}
       >
         <p>Are you sure you want to cancel this order?</p>
+        <p color="red">only 50% of the order would be refunded</p>
         {isCancelling && <Spin />}
       </Modal>
     </>
