@@ -3,7 +3,7 @@ import { Avatar, Button, Flex, Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { CartStateType, cartActions, CartItem } from '../store/cart-slice';
 import { CheckOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-
+import { useNavigate } from 'react-router-dom';
 
 const columns = (addItemToCartHandler: any, removeItemFromCartHandler: any) => [
   {
@@ -45,7 +45,7 @@ const CartPage: React.FC = () => {
   const cart = useSelector((state: CartStateType) => state.cart);
   const{billAmount, items} = cart
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const addItemToCartHandler = (item: CartItem) => {
     dispatch(cartActions.addItemToCart(item));
   };
@@ -63,13 +63,20 @@ const CartPage: React.FC = () => {
     totalPrice: item.totalPrice,
     itemId: item.itemId,
   })) : [];
+
+
+  const placeOrderHandler = () => {
+    navigate('/placeOrder' );
+
+  };
   
+
 
   return (
       <Flex vertical style={{marginLeft:80, marginRight:80}}>
       <Table columns={columns(addItemToCartHandler, removeItemFromCartHandler)} dataSource={tableData} />
-      <Button size='large' icon={<CheckOutlined />} style={{ marginLeft:'auto', marginTop:25, maxWidth:300}}>Checkout ₹ {billAmount} </Button>
-    </Flex>
+      <Button size='large' icon={<CheckOutlined />} style={{ marginLeft: 'auto', marginTop: 25, maxWidth: 300 }} onClick={placeOrderHandler}> Checkout ₹ {billAmount} </Button>
+      </Flex>
 
   );
 };

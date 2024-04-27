@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchCartData, updateCartData } from "./store/cart-actions.ts";
 import {  CartStateType } from "./store/cart-slice.ts";
+import PlaceOrder from "./pages/PlaceOrder.tsx";
 
 
 const router = createBrowserRouter([
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: "/orders", element: <OrdersPage /> },
       { path: "/customers", element: <CustomersPage /> },
       { path: "/products/:id", element: <ProductDetailsPage /> },
+      { path: "/placeOrder", element:<PlaceOrder/>}
     ],
   },
   { path: "/login", element: <LoginPage /> },
@@ -49,7 +51,7 @@ const App = () => {
       isInitial = false;
       return;
     }
-    if (cart.changed) 
+     if (cart.changed) 
       dispatch(updateCartData(cart));
   
   }, [cart, dispatch]);

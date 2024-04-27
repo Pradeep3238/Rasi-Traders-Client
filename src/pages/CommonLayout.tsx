@@ -14,6 +14,7 @@ const { Header } = Layout;
 import { CartStateType } from "../store/cart-slice";
 import useLogout from "../hooks/useLogout";
 import logo from '../assets/logo2.png'
+import FooterComponent from "../components/Footer";
 
 
 
@@ -97,6 +98,7 @@ const CommonLayout: React.FC = () => {
 
           <Outlet/>
       </Layout>
+      <FooterComponent />
     </Layout>
   );
 };

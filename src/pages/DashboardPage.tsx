@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Row, Typography } from "antd";
 import Product from "../components/DashBoard/Product";
 import DashBoardCarousel from "../components/DashBoard/DashBoardCarousel";
-import FooterComponent from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -70,7 +69,7 @@ const DashboardPage: React.FC = () => {
           View More
         </Button>
 
-      <FooterComponent />
+
     </>
   );
 };
