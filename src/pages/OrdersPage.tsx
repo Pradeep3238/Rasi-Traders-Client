@@ -2,9 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Spin, Table, Tag, message } from "antd";
 import { useSelector } from "react-redux";
 
+interface Order {
+  key: string;
+  transactionId: string;
+  product: JSX.Element[];
+  billAmount: number;
+  status: string;
+  quantity: number;
+}
 const OrdersPage: React.FC = () => {
   const { userData } = useSelector((state: any) => state.auth);
-  const [orderData, setOrderData] = useState();
+  const [orderData, setOrderData] = useState<Order[]>();
   const [cancelOrderId, setCancelOrderId] = useState<null | string>(null);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -69,7 +77,7 @@ const OrdersPage: React.FC = () => {
       message.success(
         "Order cancelled successfully. You amount will be refunded in 5-7 business days"
       );
-      const updatedOrderData = orderData.map((order: any) =>
+      const updatedOrderData = orderData && orderData.map((order: any) =>
         order.key === cancelOrderId ? { ...order, status: "cancelled" } : order
       );
       setOrderData(updatedOrderData);
@@ -117,7 +125,7 @@ const OrdersPage: React.FC = () => {
           case "pending":
             color = "grey";
             break;
-          case "processing":
+          case "confirmed":
             color = "yellow";
             break;
           case "shipped":
@@ -128,6 +136,9 @@ const OrdersPage: React.FC = () => {
             break;
           case "cancelled":
             color = "red"; // Default color if status is not recognized
+            break;
+          default:
+            color = "blue"; // Default color if status is not recognized
             break;
         }
         return <Tag color={color}>{status.toUpperCase()}</Tag>;
@@ -142,7 +153,7 @@ const OrdersPage: React.FC = () => {
           type="dashed"
           style={{ color: "red" }}
           onClick={() => handleCancelOrder(record.transactionId)}
-          disabled={record.status ==='cancelled'}
+          disabled={record.status === "cancelled"}
         >
           Cancel Order
         </Button>

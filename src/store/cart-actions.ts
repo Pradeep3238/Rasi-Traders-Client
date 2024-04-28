@@ -2,7 +2,7 @@ import { CartState, cartActions } from "./cart-slice";
 
 
 
-export const updateCartData = (cart:CartState) =>{
+export const updateCartData = (cart: CartState) =>{
       const dataString = localStorage.getItem("userData");
       let userId = "";
       if (dataString) {
