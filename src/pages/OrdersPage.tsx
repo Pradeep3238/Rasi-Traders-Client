@@ -13,7 +13,7 @@ const OrdersPage: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/v1/order/${userData._id}`
+          `${import.meta.env.VITE_API_URL}/order/${userData._id}`
         );
 
         if (!response.ok) {
@@ -56,7 +56,7 @@ const OrdersPage: React.FC = () => {
     setIsCancelModalVisible(false);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/order/cancel/${cancelOrderId}`,
+        `${import.meta.env.VITE_API_URL}/order/cancel/${cancelOrderId}`,
         {
           method: "POST",
         }

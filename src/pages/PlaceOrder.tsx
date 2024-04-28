@@ -42,7 +42,7 @@ const PlaceOrder: React.FC = () => {
 
   const handleSaveAddress = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/users/${userData._id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userData._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -77,8 +77,27 @@ const PlaceOrder: React.FC = () => {
     }));
   };
 
-  const placeOrderHandler = (e: any) => {
-    initiatePayment();
+  const placeOrderHandler =async (e: any) => {
+    try{
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/products/verify-stock`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({items})
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        message.info(errorData.message || 'Failed to verify stock');
+      }else{
+
+        initiatePayment();
+      }
+    }catch(err){
+      console.log(err);
+      message.info('failed to check the stock')
+    }
     e.preventDefault();
   };
 

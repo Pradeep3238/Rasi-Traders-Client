@@ -4,6 +4,7 @@ import { message } from "antd";
 import { authActions } from "../store/auth-slice";
 import { useNavigate } from "react-router-dom";
 
+
 const useLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const useLogin = () => {
     try {
       setError(null);
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/v1/users/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

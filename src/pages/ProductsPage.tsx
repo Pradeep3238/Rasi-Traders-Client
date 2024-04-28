@@ -15,7 +15,7 @@ const ProductsPage: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/products/",{
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/products/`,{
           headers:{
             'Authorization':`Bearer ${token}`
           }

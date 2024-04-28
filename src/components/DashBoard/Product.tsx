@@ -1,8 +1,8 @@
-import { Button, Card, Flex, Typography, theme } from "antd";
+import { Button, Card, Flex, Tag, Typography, theme } from "antd";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import {  cartActions } from "../../store/cart-slice";
+import { cartActions } from "../../store/cart-slice";
 import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
@@ -10,16 +10,16 @@ const { Title, Paragraph } = Typography;
 const Product: React.FC<{ data: any }> = ({ data }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {items} = useSelector((state: any)=> state.cart)
-  
-  const isItemInCart = items.some((cartItem: any) => cartItem.itemId === data._id);
+  const { items } = useSelector((state: any) => state.cart);
 
-  
+  const isItemInCart = items.some(
+    (cartItem: any) => cartItem.itemId === data._id
+  );
+
   const {
     token: { colorSuccess },
   } = theme.useToken();
 
-  
   const addItemToCartHandler = () => {
     dispatch(
       cartActions.addItemToCart({
@@ -51,6 +51,34 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
         </div>
       }
     >
+      {data.quantity > 0 ? (
+        <Tag
+          color={data.quantity < 20 ? "orange" : "green"}
+          style={{
+            fontSize: 14,
+            position: "absolute",
+            right: 20,
+            top: 20,
+            padding: 3,
+          }}
+        >
+          {data.quantity < 20 ? "Only few left" : "In Stock"}
+        </Tag>
+      ) : (
+        <Tag
+          color="red"
+          style={{
+            fontSize: 14,
+            position: "absolute",
+            right: 20,
+            top: 20,
+            padding: 3,
+          }}
+        >
+          Out of Stock
+        </Tag>
+      )}
+
       <Title level={3} style={{ margin: 0 }}>
         {data.name}
       </Title>
@@ -86,7 +114,7 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
         </Paragraph>
       </Flex>
       <Flex gap={20}>
-      {isItemInCart ? (
+        {isItemInCart ? (
           <Button
             icon={<ShoppingCartOutlined />}
             type="default"
@@ -100,11 +128,12 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
             icon={<ShoppingCartOutlined />}
             type="default"
             onClick={addItemToCartHandler}
+            disabled={data.quantity===0}
           >
             Add to Cart
           </Button>
-        )}    
-
+        )}
+  
         <Button
           icon={<EyeOutlined />}
           type="primary"

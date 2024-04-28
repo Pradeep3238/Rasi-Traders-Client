@@ -15,7 +15,7 @@ const useSignup = () => {
     try {
       setError(null);
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/v1/users/signup", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

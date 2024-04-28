@@ -10,7 +10,7 @@ const useRazorpay = (userData:any, billAmount:any, orderData:any) => {
   const initiatePayment = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/v1/order', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/order`, {
         method: 'POST',
         body: JSON.stringify({
           amount: billAmount * 100,

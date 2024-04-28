@@ -10,9 +10,13 @@ import {
   Row,
   Col,
   Tag,
+  theme,
 } from "antd";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { cartActions } from "../store/cart-slice";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -21,11 +25,14 @@ const ProductDetailsPage: React.FC = () => {
   const [product, setProduct] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { items } = useSelector((state: any) => state.cart);
 
   const fetchProductData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/products/${id}`
+        `${import.meta.env.VITE_API_URL}/products/${id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch product data");
@@ -43,6 +50,36 @@ const ProductDetailsPage: React.FC = () => {
   useEffect(() => {
     fetchProductData();
   }, [id]);
+
+
+
+  const addItemToCartHandler = () => {
+    dispatch(
+      cartActions.addItemToCart({
+        itemId: id,
+        image: product.images[0],
+        price: product.price,
+        quantity: 1,
+        name: product.name,
+      })
+    );
+  };
+
+  const goToCartHandler = () => {
+    navigate("/cart");
+  };
+
+
+  const isItemInCart = items.some(
+    (cartItem: any) => cartItem.itemId === id
+  );
+
+  const {
+    token: { colorSuccess },
+  } = theme.useToken();
+
+
+
 
   if (loading) {
     return <Spin />;
@@ -161,17 +198,27 @@ const ProductDetailsPage: React.FC = () => {
                     ₹{product.price}/
                     <span style={{ fontSize: 20 }}>{product.unit}</span>
                   </Title>
-                  <Button
-                    type="primary"
-                    style={{
-                      position: "absolute",
-                      bottom: "15px",
-                      right: "20px",
-                    }}
-                    onClick={() => alert(`Buying ${product.name}`)}
-                  >
-                    Add to Cart
-                  </Button>
+                  {isItemInCart ? (
+          <Button
+            icon={<ShoppingCartOutlined />}
+            type="default"
+            style={{ backgroundColor: colorSuccess,  position: "absolute",
+            bottom: "15px",
+            right: "20px", }}
+            onClick={goToCartHandler}
+          >
+            Go to Cart
+          </Button>
+        ) : (
+          <Button
+            icon={<ShoppingCartOutlined />}
+            type="default"
+            onClick={addItemToCartHandler}
+            disabled={product.quantity===0}
+          >
+            Add to Cart
+          </Button>
+        )}
                 </Flex>
               </div>
             </Col>

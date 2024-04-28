@@ -15,7 +15,7 @@ export const updateCartData = (cart:CartState) =>{
       return async () =>{
         const sendRequest =   async () =>{
           
-                const response = await fetch(`http://localhost:3000/api/v1/cart/${userId}`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/cart/${userId}`, {
                   method: "PUT",
                   headers: {
                     "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const fetchCartData = () =>{
  
   return async (dispatch:any) => {
     const fetchData = async () =>{
-      const response = await fetch(`http://localhost:3000/api/v1/cart/${userId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cart/${userId}`, {
          method: "GET",
          headers: {
            "Content-Type": "application/json",
