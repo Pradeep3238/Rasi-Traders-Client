@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 
-const useRazorpay = (userData:any, billAmount:any, orderData:any) => {
+const useRazorpay = (userData:any, token:string, billAmount:any, orderData:any) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   const initiatePayment = async () => {
@@ -18,7 +18,8 @@ const useRazorpay = (userData:any, billAmount:any, orderData:any) => {
           receipt: "receiptId"
         }),
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization' : `Bearer ${token}`
         }
       });
       const order = await response.json();
@@ -46,6 +47,7 @@ const useRazorpay = (userData:any, billAmount:any, orderData:any) => {
               body: JSON.stringify(body),
               headers: {
                 "Content-Type": "application/json",
+                'Authorization' : `Bearer ${token}`
               },
             }
           );

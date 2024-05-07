@@ -16,15 +16,18 @@ import { CartStateType } from "../store/cart-slice";
 import { useEffect, useState } from "react";
 import ContentWrapper from "../components/ContentWrapper";
 import { City, ICity } from "country-state-city";
+import UnAuthorized from "../components/UnAuthorized";
+
 const { Title, Paragraph } = Typography;
 
 const PlaceOrder: React.FC = () => {
   const cart = useSelector((state: CartStateType) => state.cart);
-  const { userData } = useSelector((state: any) => state.auth);
+  const {isAuthenticated} = useSelector((state: any) => state.auth);
+  const { userData,token } = useSelector((state: any) => state.auth);
   const { billAmount, items } = cart;
-  const { loading, initiatePayment } = useRazorpay(userData, billAmount, cart);
+  const { loading, initiatePayment } = useRazorpay(userData,token, billAmount, cart);
 
-  const [address, setAddress] = useState(userData.shippingAddress);
+  const [address, setAddress] = useState(userData?.shippingAddress);
   const [isEditing, setIsEditing] = useState(false);
  
 
@@ -82,7 +85,7 @@ const PlaceOrder: React.FC = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/products/verify-stock`,{
         method:'POST',
         headers:{
-          'Content-Type':'application/json'
+          'Content-Type':'application/json',
         },
         body:JSON.stringify({items})
       })
@@ -91,7 +94,6 @@ const PlaceOrder: React.FC = () => {
         const errorData = await response.json();
         message.info(errorData.message || 'Failed to verify stock');
       }else{
-
         initiatePayment();
       }
     }catch(err){
@@ -100,6 +102,10 @@ const PlaceOrder: React.FC = () => {
     }
     e.preventDefault();
   };
+
+if(!isAuthenticated){
+  return <UnAuthorized subtitle="Login or Signup to place an order"/>
+}
 
   return (
     <ContentWrapper>

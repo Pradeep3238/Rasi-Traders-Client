@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { CartState, cartActions } from "./cart-slice";
 
 
@@ -9,7 +10,7 @@ export const updateCartData = (cart: CartState) =>{
         const { data } = JSON.parse(dataString);
         userId = data._id;
       } else {
-        throw new Error("Authenticated user can only add items to cart");
+    message.error('Login or signup to add items to cart')
       }
       const{items, totalQuantity, billAmount} = cart
       return async () =>{

@@ -1,5 +1,6 @@
 import {
   HomeOutlined,
+  LoginOutlined,
   LogoutOutlined,
   ProductOutlined,
   ShoppingCartOutlined,
@@ -7,31 +8,30 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Badge, Button, Layout, Menu, Image } from "antd";
-import { useNavigate,Outlet, useLocation } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 const { Header } = Layout;
 
 import { CartStateType } from "../store/cart-slice";
 import useLogout from "../hooks/useLogout";
-import logo from '../assets/logo2.png'
+import logo from "../assets/logo2.png";
 import FooterComponent from "../components/Footer";
 
-
-
 const CommonLayout: React.FC = () => {
-
-  const {logout} = useLogout();
+  const { logout } = useLogout();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated } = useSelector((state: any) => state.auth);
 
+  const { totalQuantity } = useSelector((state: CartStateType) => state.cart);
 
-  const {totalQuantity} = useSelector(
-    (state: CartStateType) => state.cart
-  );
-
-  const logoutHandler=() =>{
+  const logoutHandler = () => {
     logout();
-  }
+  };
+
+  const loginHandler = () => {
+    navigate('/Login')
+  };
 
   const items2: MenuProps["items"] = [
     {
@@ -62,7 +62,7 @@ const CommonLayout: React.FC = () => {
     },
   ];
 
-  const selectedkey = location.pathname.slice(1)
+  const selectedkey = location.pathname.slice(1);
 
   return (
     <Layout>
@@ -71,7 +71,7 @@ const CommonLayout: React.FC = () => {
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent:'space-between',
+            justifyContent: "space-between",
             backgroundColor: "white",
             marginBottom: 20,
           }}
@@ -80,7 +80,7 @@ const CommonLayout: React.FC = () => {
             <Image preview={false} src={logo} height={45} />
           </div>
           <Menu
-            style={{flexGrow:1, minWidth: 450 }}
+            style={{ flexGrow: 1, minWidth: 450 }}
             mode="horizontal"
             selectedKeys={[selectedkey]}
             items={items2}
@@ -89,14 +89,29 @@ const CommonLayout: React.FC = () => {
               navigate(path);
             }}
           />
-          <div  >
-            <Button onClick={logoutHandler} icon={<LogoutOutlined/>} type="text">Logout</Button>
+          <div>
+            {isAuthenticated ? (
+              <Button
+                onClick={logoutHandler}
+                icon={<LogoutOutlined />}
+                type="text"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button
+                onClick={loginHandler}
+                icon={<LoginOutlined />}
+                type="text"
+              >
+                Login
+              </Button>
+            )}
           </div>
         </Header>
       </Layout>
       <Layout style={{ padding: "0 24px 24px" }}>
-
-          <Outlet/>
+        <Outlet />
       </Layout>
       <FooterComponent />
     </Layout>

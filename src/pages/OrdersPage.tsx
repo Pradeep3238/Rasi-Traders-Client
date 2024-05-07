@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Spin, Table, Tag, message } from "antd";
 import { useSelector } from "react-redux";
+import UnAuthorized from "../components/UnAuthorized";
 
 interface Order {
   key: string;
@@ -11,7 +12,7 @@ interface Order {
   quantity: number;
 }
 const OrdersPage: React.FC = () => {
-  const { userData } = useSelector((state: any) => state.auth);
+  const { userData, isAuthenticated } = useSelector((state: any) => state.auth);
   const [orderData, setOrderData] = useState<Order[]>();
   const [cancelOrderId, setCancelOrderId] = useState<null | string>(null);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
@@ -50,7 +51,7 @@ const OrdersPage: React.FC = () => {
     };
 
     fetchOrders();
-  }, [userData._id]);
+  }, []);
 
   console.log(orderData);
 
@@ -67,6 +68,9 @@ const OrdersPage: React.FC = () => {
         `${import.meta.env.VITE_API_URL}/order/cancel/${cancelOrderId}`,
         {
           method: "POST",
+          headers: {
+            'Authorization': `Bearer ${userData.token}`,
+          },
         }
       );
       if (!response.ok) {
@@ -77,9 +81,13 @@ const OrdersPage: React.FC = () => {
       message.success(
         "Order cancelled successfully. You amount will be refunded in 5-7 business days"
       );
-      const updatedOrderData = orderData && orderData.map((order: any) =>
-        order.key === cancelOrderId ? { ...order, status: "cancelled" } : order
-      );
+      const updatedOrderData =
+        orderData &&
+        orderData.map((order: any) =>
+          order.key === cancelOrderId
+            ? { ...order, status: "cancelled" }
+            : order
+        );
       setOrderData(updatedOrderData);
       console.log("Cancellation response:", responseData);
     } catch (err) {
@@ -160,6 +168,10 @@ const OrdersPage: React.FC = () => {
       ),
     },
   ];
+
+  if (!isAuthenticated) {
+    return <UnAuthorized subtitle="Login to view your orders" />;
+  }
 
   return (
     <>

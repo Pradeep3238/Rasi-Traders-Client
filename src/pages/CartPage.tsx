@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CartStateType, cartActions, CartItem } from '../store/cart-slice';
 import { CheckOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import UnAuthorized from '../components/UnAuthorized';
 
 const columns = (addItemToCartHandler: any, removeItemFromCartHandler: any) => [
   {
@@ -42,6 +43,7 @@ const columns = (addItemToCartHandler: any, removeItemFromCartHandler: any) => [
 
 const CartPage: React.FC = () => {
 
+  const {isAuthenticated} = useSelector((state: any) => state.auth);
   const cart = useSelector((state: CartStateType) => state.cart);
   const{billAmount, items} = cart
   const dispatch = useDispatch();
@@ -70,7 +72,9 @@ const CartPage: React.FC = () => {
 
   };
   
-
+  if(!isAuthenticated){
+    return <UnAuthorized subtitle='Login to add items to cart'/>
+  }
 
   return (
       <Flex vertical style={{marginLeft:80, marginRight:80}}>

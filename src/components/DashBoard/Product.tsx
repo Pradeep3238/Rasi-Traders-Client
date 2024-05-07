@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Tag, Typography, theme } from "antd";
+import { Button, Card, Flex, Tag, Typography, message, theme } from "antd";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items } = useSelector((state: any) => state.cart);
+  const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
 
   const isItemInCart = items.some(
     (cartItem: any) => cartItem.itemId === data._id
@@ -21,7 +22,11 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
   } = theme.useToken();
 
   const addItemToCartHandler = () => {
-    dispatch(
+   if(!isAuthenticated){
+    message.error('login or signup to add items to cart')
+   }else if(isAuthenticated){
+
+     dispatch(
       cartActions.addItemToCart({
         itemId: data._id,
         image: data.images[0],
@@ -30,6 +35,7 @@ const Product: React.FC<{ data: any }> = ({ data }) => {
         name: data.name,
       })
     );
+   }
   };
 
   const goToCartHandler = () => {
