@@ -9,7 +9,7 @@ export const useLogout = () => {
   const logout = () => {
     localStorage.clear()
     dispatch(authActions.logout());
-    navigate("/login");
+    navigate("/");
     message.success("You have been logged out!");
   };
   return { logout };

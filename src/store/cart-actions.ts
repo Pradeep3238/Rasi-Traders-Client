@@ -86,19 +86,3 @@ export const fetchCartData = () =>{
   }
 }
 
-
-// const transformedData: CartState = {
-//   items: data.cart.items.map((item: any) => ({
-//     itemId: item.product._id,
-//     name: item.product.name,
-//     image: item.product.images ? item.product.images[0] : "",
-//     price: item.product.price,
-//     quantity: item.product.quantity,
-//     totalPrice: item.product.quantity * item.product.price,
-//   })),
-//   totalQuantity: data.cart.items.reduce((sum: number, item: any) => sum + item.product.quantity, 0),
-//   billAmount: data.cart.items.reduce((sum: number, item: any) => sum + item.product.quantity * item.product.price, 0),
-  
-// };
-// console.log(transformedData);
-// return transformedData;

@@ -12,7 +12,7 @@ interface Order {
   quantity: number;
 }
 const OrdersPage: React.FC = () => {
-  const { userData, isAuthenticated } = useSelector((state: any) => state.auth);
+  const { userData, isAuthenticated , token} = useSelector((state: any) => state.auth);
   const [orderData, setOrderData] = useState<Order[]>();
   const [cancelOrderId, setCancelOrderId] = useState<null | string>(null);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
@@ -22,7 +22,12 @@ const OrdersPage: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/order/${userData._id}`
+          `${import.meta.env.VITE_API_URL}/order/${userData._id}`,{
+            method: "GET",
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
         );
 
         if (!response.ok) {
@@ -69,7 +74,7 @@ const OrdersPage: React.FC = () => {
         {
           method: "POST",
           headers: {
-            'Authorization': `Bearer ${userData.token}`,
+            'Authorization': `Bearer ${token}`,
           },
         }
       );
