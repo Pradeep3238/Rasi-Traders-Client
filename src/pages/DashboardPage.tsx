@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Typography } from "antd";
+import { Button, Col, Row, Spin, Typography } from "antd";
 import Product from "../components/DashBoard/Product";
 import DashBoardCarousel from "../components/DashBoard/DashBoardCarousel";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 const { Paragraph, Title } = Typography;
 const DashboardPage: React.FC = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const {token} = useSelector((state:any) => state.auth);
@@ -28,6 +29,8 @@ const DashboardPage: React.FC = () => {
         setProducts(data.data);
       } catch (error) {
         console.log("Error fetching products:", error);
+      }finally{
+        setLoading(false)
       }
     };
 
@@ -53,6 +56,8 @@ const DashboardPage: React.FC = () => {
       <DashBoardCarousel />
 
         <Title style={{ textAlign: "center" }}>Our Products</Title>
+        <Spin spinning={loading}>
+
         <Row gutter={[16, 48]} style={{ marginTop: 50 }}>
           {products.slice(0, 4).map((product, index) => (
             <Col key={index} span={6}>
@@ -60,6 +65,7 @@ const DashboardPage: React.FC = () => {
             </Col>
           ))}
         </Row>
+        </Spin>
         <Button
           type="primary"
           size="large"

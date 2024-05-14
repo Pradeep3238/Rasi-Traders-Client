@@ -116,6 +116,22 @@ const ProductDetailsPage: React.FC = () => {
                 </div>
               </Col>
               <Col span={14}>
+                {
+                  product.quantity ===0 && (
+                    <Tag
+                    color={"red"}
+                    style={{
+                      fontSize: 18,
+                      position: "absolute",
+                      right: 20,
+                      top: 20,
+                      padding: 10,
+                    }}
+                  >
+                    Out of Stock
+                  </Tag>
+                  )
+                }
                 {product.quantity > 0 && (
                   <Tag
                     color={product.quantity < 20 ? "orange" : "green"}

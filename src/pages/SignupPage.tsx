@@ -7,23 +7,33 @@ import {
   Input,
   Typography,
   Image,
-  Spin,
   Space,
   Select,
+  Modal,
+  message,
 } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   PhoneOutlined,
   LockOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import logo from "../assets/logo4.png";
 import useSignup from "../hooks/useSignup";
 
+
+
 const SignupPage = () => {
-  const [step, setStep] = useState(1); // Initial step
-  const [formData, setFormData] = useState({}); // State to hold form data
-  const { loading, registerUser } = useSignup(); // Custom hook for signup
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({});
+  const { loading, registerUser } = useSignup();
+  const [verificationStatus, setVerificationStatus] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false); // new state for sending OTP
+  const [verifyingOtp, setVerifyingOtp] = useState(false); 
 
   const [cities, setCities] = useState<ICity[]>([]);
   useEffect(() => {
@@ -31,17 +41,83 @@ const SignupPage = () => {
     setCities(data.map((city: any) => city.name));
   }, []);
 
-  // Handle form submission for step 1 (basic user details)
-  const handleStep1Submit = (values: any) => {
-    setFormData({ ...formData, ...values }); // Update form data
-    setStep(2); // Move to the next step
+  const handleEmail = (event:any)=>{
+    setEmail(event?.target.value)
+  }
+
+  const handleOtpChange = (event:any) => {
+    setOtp(event.target.value);
   };
 
-  // Handle final form submission
+  const handleVerifyOTP = async () => {
+    setVerifyingOtp(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/users/verify-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body:JSON.stringify({email,otp})
+        }
+      );
+      if (response.ok) {
+        setVerificationStatus(true);
+        setOpen(false);
+        message.success("OTP verified successfully!");
+      } else {
+        message.error('Invalid OTP. Please try again.');
+      }
+    } catch (err) {
+      console.log(err);
+      message.error('OTP verification failed. Please try again.');
+    }finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  const modalHandler = async()=>{
+    if(!email){
+      message.error('please enter an email')
+    }else{
+
+      setSendingOtp(true);
+        try{
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/users/send-otp`,{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json'
+            },
+            body: JSON.stringify({ email }),
+          })
+          if(!response.ok){
+            message.error('Something went wrong. Try again later.')
+          }else{
+            setOpen(true);
+          }
+        }catch(err){
+          console.log(err);
+          message.error('Failed to send OTP. Please try again.');
+        } finally {
+          setSendingOtp(false);
+        }
+    }
+  }
+
+  const handleStep1Submit = (values: any) => {
+    setFormData({ ...formData, ...values });
+    setStep(2);
+  };
+
   const handleFinalSubmit = (values: any) => {
     const finalFormData = { ...formData, ...values };
-    registerUser(finalFormData); // Submit final form data
+    registerUser(finalFormData);
   };
+
+  const handleCancel=()=>{
+    setOpen(false)
+  }
 
   return (
     <div
@@ -67,12 +143,19 @@ const SignupPage = () => {
 
         {step === 1 && (
           <Form name="signup" layout="vertical" onFinish={handleStep1Submit}>
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
-            >
-              <Input prefix={<MailOutlined />} placeholder="Email" />
-            </Form.Item>
+            <Space style={{gap:15}}>
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                ]}
+              >
+                <Input prefix={<MailOutlined />} onChange={handleEmail} placeholder="Email" style={{width:300}} />
+              </Form.Item>
+              <Form.Item>
+                <Button onClick={modalHandler} disabled={verificationStatus}>{sendingOtp ?<LoadingOutlined/>:'Verify'}</Button>
+              </Form.Item>
+            </Space>
             <Form.Item
               name="password"
               rules={[
@@ -86,7 +169,12 @@ const SignupPage = () => {
               />
             </Form.Item>
             <Form.Item style={{ marginBottom: "16px" }}>
-              <Button block type="primary" htmlType="submit">
+              <Button
+                block
+                type="primary"
+                htmlType="submit"
+                disabled={!verificationStatus}
+              >
                 Next
               </Button>
             </Form.Item>
@@ -109,24 +197,24 @@ const SignupPage = () => {
             >
               <Input prefix={<PhoneOutlined />} placeholder="Phone" />
             </Form.Item>
-              <Space.Compact>
-                <Form.Item name={["shippingAddress", "street"]}>
-                  <Input placeholder="Door No and street" />
-                </Form.Item>
-                <Form.Item name={["shippingAddress", "city"]}>
-                  <Select
-                    showSearch
-                    placeholder="City"
-                    options={cities.map((city: any) => ({
-                      value: city,
-                      label:city
-                    }))}
-                  />
-                </Form.Item>
-                <Form.Item name={["shippingAddress", "zip"]}>
-                  <Input placeholder="Pincode" />
-                </Form.Item>
-              </Space.Compact>
+            <Space.Compact>
+              <Form.Item name={["shippingAddress", "street"]}>
+                <Input placeholder="Door No and street" />
+              </Form.Item>
+              <Form.Item name={["shippingAddress", "city"]}>
+                <Select
+                  showSearch
+                  placeholder="City"
+                  options={cities.map((city: any) => ({
+                    value: city,
+                    label: city,
+                  }))}
+                />
+              </Form.Item>
+              <Form.Item name={["shippingAddress", "zip"]}>
+                <Input placeholder="Pincode" />
+              </Form.Item>
+            </Space.Compact>
 
             <Form.Item style={{ marginBottom: "16px" }}>
               <Button
@@ -134,7 +222,7 @@ const SignupPage = () => {
                 type={loading ? undefined : "primary"}
                 htmlType="submit"
               >
-                {loading ? <Spin /> : "Signup"}
+                {loading ? <LoadingOutlined /> : "Signup"}
               </Button>
             </Form.Item>
           </Form>
@@ -144,6 +232,13 @@ const SignupPage = () => {
           Already have an account? <Link to="/login">Login</Link>
         </Typography.Text>
       </div>
+
+      <Modal visible={open} onOk={handleVerifyOTP} okButtonProps={{ disabled: verifyingOtp }} okText={ verifyingOtp ? <LoadingOutlined  /> : "OK"} onCancel={handleCancel}>
+        <Typography.Paragraph>
+          Check your mail for OTP !
+        </Typography.Paragraph>
+        <Input placeholder="OTP here" onChange={handleOtpChange}></Input>
+      </Modal>
     </div>
   );
 };

@@ -12,20 +12,23 @@ interface Order {
   quantity: number;
 }
 const OrdersPage: React.FC = () => {
-  const { userData, isAuthenticated , token} = useSelector((state: any) => state.auth);
+  const { userData, isAuthenticated, token } = useSelector(
+    (state: any) => state.auth
+  );
   const [orderData, setOrderData] = useState<Order[]>();
   const [cancelOrderId, setCancelOrderId] = useState<null | string>(null);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/order/${userData._id}`,{
+          `${import.meta.env.VITE_API_URL}/order/${userData._id}`,
+          {
             method: "GET",
             headers: {
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -52,6 +55,8 @@ const OrdersPage: React.FC = () => {
         setOrderData(formattedData);
       } catch (error) {
         console.log("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -74,7 +79,7 @@ const OrdersPage: React.FC = () => {
         {
           method: "POST",
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -180,7 +185,9 @@ const OrdersPage: React.FC = () => {
 
   return (
     <>
-      <Table columns={columns} dataSource={orderData} />
+      <Spin spinning={loading} size="large">
+        <Table columns={columns} dataSource={orderData} />
+      </Spin>
       <Modal
         title="Order cancellation"
         visible={isCancelModalVisible}
