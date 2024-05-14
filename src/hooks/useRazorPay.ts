@@ -41,7 +41,7 @@ const useRazorpay = (userData:any, token:string, billAmount:any, orderData:any) 
           };
           console.log(body)
           const validateRes = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/v1/order/create`,
+            `${import.meta.env.VITE_API_URL}/order/create`,
             {
               method: "POST",
               body: JSON.stringify(body),
