@@ -32,7 +32,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCartData(state, action) {
+    setCartData(state, action: PayloadAction<{ items: CartItem[], totalQuantity: number, billAmount: number }>) {
       const { items, totalQuantity, billAmount } = action.payload;
       state.items = items;
       state.totalQuantity = totalQuantity;
@@ -60,7 +60,7 @@ const cartSlice = createSlice({
         existingItem.totalPrice += newItem.price;
       }
     },
-    removeItemFromCart(state, action) {
+    removeItemFromCart(state, action: PayloadAction<string>) {
       const id = action.payload;
       state.changed=true
       const existingItem = state.items.find(

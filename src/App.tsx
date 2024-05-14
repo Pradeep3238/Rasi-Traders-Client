@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { fetchCartData, updateCartData } from "./store/cart-actions.ts";
 import {  CartStateType } from "./store/cart-slice.ts";
 import PlaceOrder from "./pages/PlaceOrder.tsx";
+import { AppDispatch } from "./store/index.ts";
 
 
 const router = createBrowserRouter([
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
 let isInitial = true;
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch:AppDispatch = useDispatch();
   const cart = useSelector((state: CartStateType) => state.cart);
 
   useEffect(() => {

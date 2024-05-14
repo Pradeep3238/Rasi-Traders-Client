@@ -1,9 +1,10 @@
 import { message } from "antd";
 import { CartState, cartActions } from "./cart-slice";
+import { AppThunk } from ".";
 
 
 
-export const updateCartData = (cart: CartState) =>{
+export const updateCartData = (cart: CartState):AppThunk =>{
       const dataString = localStorage.getItem("userData");
       let userId = "";
       if (dataString) {
@@ -40,7 +41,7 @@ export const updateCartData = (cart: CartState) =>{
       }
 }
 
-export const fetchCartData = () =>{
+export const fetchCartData = ():AppThunk =>{
   const dataString = localStorage.getItem("userData");
   let userId = "";
   if (dataString) {
