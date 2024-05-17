@@ -11,8 +11,8 @@ import {
   message,
 } from "antd";
 import useRazorpay from "../hooks/useRazorPay";
-import { useSelector } from "react-redux";
-import { CartStateType } from "../store/cart-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { CartStateType, cartActions } from "../store/cart-slice";
 import { useEffect, useState } from "react";
 import ContentWrapper from "../components/ContentWrapper";
 import { City, ICity } from "country-state-city";
@@ -21,6 +21,7 @@ import UnAuthorized from "../components/UnAuthorized";
 const { Title, Paragraph } = Typography;
 
 const PlaceOrder: React.FC = () => {
+  const dispatch = useDispatch();
   const cart = useSelector((state: CartStateType) => state.cart);
   const {isAuthenticated} = useSelector((state: any) => state.auth);
   const { userData,token } = useSelector((state: any) => state.auth);
@@ -102,7 +103,11 @@ const PlaceOrder: React.FC = () => {
     }
     e.preventDefault();
   };
-
+  dispatch(cartActions.setCartData({
+    items:[],
+    billAmount:0,
+    totalQuantity:0
+  }))
 if(!isAuthenticated){
   return <UnAuthorized subtitle="Login or Signup to place an order"/>
 }
